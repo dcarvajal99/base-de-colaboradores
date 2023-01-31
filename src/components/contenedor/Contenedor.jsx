@@ -62,7 +62,7 @@ const Contenedor = () => {
                             onChange={setTxt}
                         />
                         <Form.Group>
-                        <Button variant="outline-light" >Filtrar</Button>
+                        <Button variant="outline-light " onClick={inputNav}>Filtrar</Button>
                         </Form.Group>
                         
                     </Form>
