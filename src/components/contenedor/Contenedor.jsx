@@ -13,29 +13,39 @@ const Contenedor = () => {
     const [arrayColaboradores, setArrayColaboradores] = useState(BaseColaboradores);
     const [alerta, setAlerta] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [input, setInput] = useState("");
-    const [value, setValue] = useState("");
+    const [filtro, setFiltro] = useState('');
+    const [resultados, setResultados] = useState([]);
 
-    const inputNav = (e) =>{
+    const handleSubmitFiltro = e => {
         e.preventDefault();
-        setIsModalOpen(true)
-    }
-    const setTxt = (e) => {
-        setInput(e.target.value)
-        /* console.log(input) */
+        if(filtro !== ""){
+            setResultados(arrayColaboradores.filter(colaborador =>
+                colaborador.nombre.toLowerCase().includes(filtro.toLowerCase()) || colaborador.correo.toLowerCase().includes(filtro.toLowerCase()) ));
+            setIsModalOpen(true)
+        }
         
-    }
-
+    };
+    /* 
+        const inputNav = (e) => {
+            e.preventDefault();
+            setIsModalOpen(true)
+        }
+        const setTxt = (e) => {
+            setInput(e.target.value)
+    
+    
+        }
+     */
     const setNombre = (e) => {
         setNombreColaborador(e.target.value)
         /* console.log(nombreColaborador) */
-        
+
     }
 
     const setEmail = (e) => {
         setEmailColaborador(e.target.value)
         /* console.log(emailColaborador) */
-        
+
     }
 
     const handleSubmit = (e) => {
@@ -59,18 +69,19 @@ const Contenedor = () => {
             <Navbarbootstrap className='bg-dark text-light ' expand="lg" >
                 <Container fluid className='bg-dark text-light d-flex '>
                     <Navbarbootstrap.Brand className='text-light'>Colaboradores</Navbarbootstrap.Brand>
-                    <Form className="d-flex" onSubmit={inputNav}>
+                    <Form className="d-flex" onSubmit={handleSubmitFiltro}>
                         <Form.Control
-                            type="search"
+                            type="text"
                             placeholder="Buscar"
+                            value={filtro}
                             className="me-2"
                             aria-label="Buscar"
-                            onChange={setTxt}
+                            onChange={e => setFiltro(e.target.value)}
                         />
                         <Form.Group>
-                        <Button variant="outline-light " onClick={inputNav}>Filtrar</Button>
+                            <Button type="submit " variant="outline-light ">Filtrar</Button>
                         </Form.Group>
-                        
+
                     </Form>
 
                 </Container>
@@ -103,20 +114,20 @@ const Contenedor = () => {
             <ul>
                 {arrayColaboradores.map(colaborador => <li
                     key={colaborador.id}>
-                     <strong>Nombre:</strong> {colaborador.nombre} - <strong>Correo:</strong> {colaborador.correo}
+                    <strong>Nombre:</strong> {colaborador.nombre} - <strong>Correo:</strong> {colaborador.correo}
                 </li>)}
             </ul>
 
             {/* BOTON PARA ACTIVAR MODAL SOBREPUESTO */}
             <ListaDeColaboradores
                 isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}
-                arrayColaboradores={arrayColaboradores} input={input} />
+                resultados={resultados} />
         </>
     );
 }
 
 
-function ListaDeColaboradores({ isOpen, onClose, arrayColaboradores, input }) {
+function ListaDeColaboradores({ isOpen, onClose, resultados, input }) {
     return (
         <div style={{ display: isOpen ? 'block' : 'none' }}>
             <div className="modal-backdrop fade show" />
@@ -131,35 +142,17 @@ function ListaDeColaboradores({ isOpen, onClose, arrayColaboradores, input }) {
                         </div>
                         <div className="modal-body">
 
-                            {
-                            arrayColaboradores
-                            // eslint-disable-next-line array-callback-return
-                            .filter((colaborador) => {
-                                if(
-                                    colaborador.nombre.toLocaleLowerCase().includes(input.toLocaleLowerCase()) ||
-                                    colaborador.correo.toLocaleLowerCase().includes(input.toLocaleLowerCase())
-                                    
-                                ){
-                                    return true
-                                } 
-                            }) ?
-                            arrayColaboradores
-                            // eslint-disable-next-line array-callback-return
-                            .filter((colaborador) => {
-                                if (input === "") {
-                                return colaborador
-                                }else if(
-                                    colaborador.nombre.toLocaleLowerCase().includes(input.toLocaleLowerCase()) ||
-                                    colaborador.correo.toLocaleLowerCase().includes(input.toLocaleLowerCase())
-                                ){
-                                    return colaborador
-                                } 
-                            }).map((colaborador) => (
-                                <div key={colaborador.id}>
-                                <strong>Nombre:</strong> {colaborador.nombre} - <strong>Correo:</strong> {colaborador.correo}
-                                </div>
-                            )) : <h2>No hay Resultados</h2>
-                            }
+                            {resultados.length > 0 ? (
+                                <ul>
+                                    {resultados.map(colaborador => (
+                                        <li key={colaborador.id}>
+                                            Nombre: {colaborador.nombre} - Correo: {colaborador.correo}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p>No se ha encontrado ningún resultado</p>
+                            )}
 
                         </div>
                     </div>
