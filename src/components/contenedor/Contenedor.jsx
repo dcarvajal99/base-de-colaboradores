@@ -168,11 +168,5 @@ function ListaDeColaboradores({ isOpen, onClose, arrayColaboradores, input }) {
         </div>
     );
 }
-/*   <ul>
-                                {arrayColaboradores.map(colaborador => <li
-                                    key={colaborador.id}>
-                                    {colaborador.id} - {colaborador.nombre} - {colaborador.correo}
-                                </li>)}
-                            </ul> */
 
 export default Contenedor
